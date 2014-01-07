@@ -1,3 +1,5 @@
+package name.felixbecker.hornetqpoc
+
 import org.hornetq.api.core.client.{ClientSessionFactory, HornetQClient}
 import org.hornetq.api.core.TransportConfiguration
 import org.hornetq.core.config.impl.FileConfiguration

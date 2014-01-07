@@ -1,8 +1,12 @@
+package name.felixbecker.hornetqpoc
+
 import org.hornetq.api.core.HornetQQueueExistsException
+import name.felixbecker.hornetqpoc.jetty.JettyManager
 
 object Main extends App {
 
   HornetQManager.start
+  JettyManager.startJetty
 
   val session = HornetQManager.sessionFactory.createSession(true, true)
 

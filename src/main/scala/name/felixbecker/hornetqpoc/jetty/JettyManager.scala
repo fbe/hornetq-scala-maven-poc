@@ -1,3 +1,5 @@
+package name.felixbecker.hornetqpoc.jetty
+
 import org.eclipse.jetty.server.Server
 
 object JettyManager {
