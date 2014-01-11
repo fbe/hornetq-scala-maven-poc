@@ -10,6 +10,7 @@ object HornetQManager {
 
   private val serverLocator = HornetQClient.createServerLocatorWithHA(new TransportConfiguration(classOf[InVMConnectorFactory].getName))
 
+
   val hornetQ = new EmbeddedHornetQ()
   val configuration = new FileConfiguration("hornetq-embedded-configuration.xml")
 

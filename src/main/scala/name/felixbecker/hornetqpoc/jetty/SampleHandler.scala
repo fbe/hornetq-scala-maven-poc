@@ -10,28 +10,27 @@ object SampleHandler extends AbstractHandler {
 
   def handle(target: String, baseRequest: Request, request: HttpServletRequest, response: HttpServletResponse): Unit = {
 
-    val session = HornetQManager.sessionFactory.createSession(true,true)
+   // val session = HornetQManager.sessionFactory.createSession(true,true)
+
+    val session = PrimitiveHornetQSessionPool.borrow
 
     val tempQueueName = UUID.randomUUID.toString
 
-    session.start
+   // session.session.start
 
-    session.createTemporaryQueue(tempQueueName, tempQueueName)
 
-    val consumer = session.createConsumer(tempQueueName)
 
-    val producer = session.createProducer(tempQueueName)
+    val message = session.session.createMessage(false)
+    message.putStringProperty("CorrelationId", "Hello Consumer " + session.consumerNumber)
 
-    val message = session.createMessage(false)
-    message.putStringProperty("CorrelationId", "1234")
+    session.producer.send(session.consumerNumber.toString,message)
 
-    producer.send(tempQueueName,message)
+    //producer.close
 
-    producer.close
+    val receivedMessage = session.consumer.receive
+    receivedMessage.acknowledge
 
-    val receivedMessage = consumer.receive
-
-    println("received message: " + receivedMessage.getStringProperty("CorrelationId"))
+    //println("received message: " + receivedMessage.getStringProperty("CorrelationId"))
 
     try {
       response.setContentType("text/html;charset=utf-8")
@@ -39,11 +38,12 @@ object SampleHandler extends AbstractHandler {
       baseRequest.setHandled(true)
       response.getWriter().println("oh hai")
     } finally {
-      consumer.close
-      session.deleteQueue(tempQueueName)
+   //   consumer.close
+   //   session.deleteQueue(tempQueueName)
 
-      session.stop
-      session.close
+   //   session.stop
+      PrimitiveHornetQSessionPool.release(session)
+      //session.close
     }
 
   }
